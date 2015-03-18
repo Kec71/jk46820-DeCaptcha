@@ -3,4 +3,14 @@
   <groupId>hr.fer.captcha</groupId>
   <artifactId>Captcha</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  
+  <dependencies>
+  	
+  	<dependency>
+		<groupId>org.apache.commons</groupId>
+		<artifactId>commons-math3</artifactId>
+		<version>3.2</version>
+	</dependency>
+  
+  </dependencies>
 </project>
