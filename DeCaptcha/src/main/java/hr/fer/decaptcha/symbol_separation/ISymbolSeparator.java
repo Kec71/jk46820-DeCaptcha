@@ -10,5 +10,5 @@ public interface ISymbolSeparator {
 	 * @param image reference to image which contains symbols to be separated.
 	 * @return reference to collection of separated images.
 	 */
-	List<BufferedImage> separateSymbols(BufferedImage image);
+	List<BufferedImage> separateSymbols(final BufferedImage image);
 }
