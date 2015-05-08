@@ -54,6 +54,7 @@ public class Application {
 			List<BufferedImage> symbols = separator.separateSymbols(image);
 			
 			for(BufferedImage symbol : symbols) {
+				Thread.sleep(10);
 				ImageIO.write(symbol, "png", new File("demo_output/symbol_" + System.currentTimeMillis() % 1000 + ".png"));
 			}
 			
