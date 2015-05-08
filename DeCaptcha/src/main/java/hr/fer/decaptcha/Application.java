@@ -17,7 +17,11 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import org.apache.log4j.Logger;
+
 public class Application {
+	
+	static Logger log = Logger.getLogger(Application.class); 
 
 	public static void main(String[] args) {
 		
@@ -30,6 +34,7 @@ public class Application {
 		
 		try {
 			
+			log.info("Loading image from: " + inputFile);
 			image = ImageUtil.convertImage(BufferedImage.TYPE_BYTE_GRAY, ImageIO.read(inputFile));
 			
 			clutterRemoval = new MedianFilter();
@@ -54,7 +59,9 @@ public class Application {
 			List<BufferedImage> symbols = separator.separateSymbols(image);
 			
 			for(BufferedImage symbol : symbols) {
-				ImageIO.write(symbol, "png", new File("demo_output/symbol_" + System.currentTimeMillis() % 1000 + ".png"));
+				File symbolFile = new File("demo_output/symbol_" + System.currentTimeMillis() % 1000 + ".png");
+				log.info("Saving symbol to: " + symbolFile);
+				ImageIO.write(symbol, "png", symbolFile);
 			}
 			
 			ImageIO.write(image, "png", outputFile);

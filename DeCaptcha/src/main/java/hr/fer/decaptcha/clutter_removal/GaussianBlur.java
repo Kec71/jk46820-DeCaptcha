@@ -5,6 +5,8 @@ import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 
+import org.apache.log4j.Logger;
+
 /**
  * <p>Class which represents clutter removal technique called gaussian blur.</p>
  * <p>This technique uses mask of particular size to determine value of new pixel of image at index x, y.
@@ -15,8 +17,11 @@ import java.util.ArrayList;
  *
  */
 public class GaussianBlur implements IClutterRemoval {
+	
+	static Logger log = Logger.getLogger(GaussianBlur.class); 
 
 	public BufferedImage removeClutter(BufferedImage inputImage) {
+		log.info("Applying  Gaussian Blur on image.");
 
 		/* Represents mask size which will be used to sample surrounding pixel values */
 		final int maskSize = 3;

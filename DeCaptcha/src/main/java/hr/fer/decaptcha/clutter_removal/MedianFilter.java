@@ -8,6 +8,8 @@ import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import org.apache.log4j.Logger;
+
 /**
  * <p>Class which represents clutter removal technique called median filter.</p>
  * <p>This technique uses mask of particular size to determine value of new pixel of image at index x, y.
@@ -18,8 +20,11 @@ import java.util.Collections;
  *
  */
 public class MedianFilter implements IClutterRemoval {
+	
+	static Logger log = Logger.getLogger(MedianFilter.class);
 
 	public BufferedImage removeClutter(BufferedImage inputImage) {
+		log.info("Applying median filter to image.");
 		
 		/* Represents mask size which will be used to sample surrounding pixel values */
 		final int maskSize = 3;
