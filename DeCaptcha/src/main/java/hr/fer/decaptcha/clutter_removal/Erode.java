@@ -48,23 +48,22 @@ public class Erode implements IClutterRemoval {
 		for(int i = 0; i < imageWidth; i++) {
 			for(int j = 0; j < imageHeight; j++) {
 					
-					/* Check surrounding pixels - if one of them is white then set pixel to white (erode it) */
-					if(	inputRaster.getPixel(i, j, pixelData)[0] == Constant.PIXEL_BLACK && 
-					   (inputRaster.getPixel(i+1, j+1, pixelData)[0] == Constant.PIXEL_WHITE 	||
-						inputRaster.getPixel(i+1, j, pixelData)[0] == Constant.PIXEL_WHITE 		||
-						inputRaster.getPixel(i+1, j-1, pixelData)[0] == Constant.PIXEL_WHITE 	||
-						inputRaster.getPixel(i, j+1, pixelData)[0] == Constant.PIXEL_WHITE 		||
-						inputRaster.getPixel(i, j, pixelData)[0] == Constant.PIXEL_WHITE 		||
-						inputRaster.getPixel(i, j-1, pixelData)[0] == Constant.PIXEL_WHITE 		||
-						inputRaster.getPixel(i-1, j+1, pixelData)[0] == Constant.PIXEL_WHITE 	||
-						inputRaster.getPixel(i-1, j, pixelData)[0] == Constant.PIXEL_WHITE 		||
-						inputRaster.getPixel(i-1, j-1, pixelData)[0] == Constant.PIXEL_WHITE) ) {
-							outputRaster.setPixel(i, j, new int[] {Constant.PIXEL_WHITE});
-					} 
-					/* Otherwise set pixel to current pixel value */
-					else {
-						outputRaster.setPixel(i, j, inputRaster.getPixel(i, j, pixelData));
-					}
+				/* Check surrounding pixels - if one of them is white then set pixel to white (erode it) */
+				if(	inputRaster.getPixel(i, j, pixelData)[0] == Constant.PIXEL_BLACK && 
+				   (inputRaster.getPixel(i+1, j+1, pixelData)[0] == Constant.PIXEL_WHITE 	||
+					inputRaster.getPixel(i+1, j, pixelData)[0] == Constant.PIXEL_WHITE 		||
+					inputRaster.getPixel(i+1, j-1, pixelData)[0] == Constant.PIXEL_WHITE 	||
+					inputRaster.getPixel(i, j+1, pixelData)[0] == Constant.PIXEL_WHITE 		||
+					inputRaster.getPixel(i, j-1, pixelData)[0] == Constant.PIXEL_WHITE 		||
+					inputRaster.getPixel(i-1, j+1, pixelData)[0] == Constant.PIXEL_WHITE 	||
+					inputRaster.getPixel(i-1, j, pixelData)[0] == Constant.PIXEL_WHITE 		||
+					inputRaster.getPixel(i-1, j-1, pixelData)[0] == Constant.PIXEL_WHITE) ) {
+						outputRaster.setPixel(i, j, new int[] {Constant.PIXEL_WHITE});
+				} 
+				/* Otherwise set pixel to current pixel value */
+				else {
+					outputRaster.setPixel(i, j, inputRaster.getPixel(i, j, pixelData));
+				}
 			}
 		}
 		

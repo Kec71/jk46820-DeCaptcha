@@ -1,9 +1,10 @@
 package hr.fer.decaptcha.clutter_removal;
 
 import hr.fer.decaptcha.constants.Axis;
-import hr.fer.decaptcha.constants.Boundry;
+import hr.fer.decaptcha.constants.Boundary;
 import hr.fer.decaptcha.constants.Constant;
 import hr.fer.decaptcha.histogram.Histogram;
+import hr.fer.decaptcha.image.util.ImageUtil;
 
 import java.awt.image.BufferedImage;
 
@@ -27,10 +28,17 @@ public class AxisTrimmer implements IClutterRemoval {
 
 		int[] histogram = Histogram.generateHistogram(image, this.axis);
 
-		int upper = Histogram.findBoundy(histogram, Boundry.UPPER, Constant.PIXEL_THRESHOLD, Constant.PIXEL_OFFSET);
-		int bottom = Histogram.findBoundy(histogram, Boundry.BOTTOM, Constant.PIXEL_THRESHOLD, Constant.PIXEL_OFFSET);
+		int upper = Histogram.findBoundy(histogram, Boundary.UPPER, Constant.PIXEL_THRESHOLD, Constant.PIXEL_OFFSET);
+		int bottom = Histogram.findBoundy(histogram, Boundary.BOTTOM, Constant.PIXEL_THRESHOLD, Constant.PIXEL_OFFSET);
 
-		/* Note: Subimage of image shares the same data array as the original image. */
-		return image.getSubimage(bottom, 0, upper-bottom, image.getHeight());
+		BufferedImage outputImage = null;
+		
+		if(axis.equals(Axis.X_AXIS)) {
+			outputImage = ImageUtil.copyImage(image, bottom, 0, upper-bottom, image.getHeight());
+		} else if(axis.equals(Axis.Y_AXIS)){
+			outputImage = ImageUtil.copyImage(image, 0, bottom, image.getWidth(), upper-bottom);
+		}
+		
+		return outputImage;
 	}
 }

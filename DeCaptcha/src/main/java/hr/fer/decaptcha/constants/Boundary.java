@@ -6,6 +6,6 @@ package hr.fer.decaptcha.constants;
  * @author Janko
  *
  */
-public enum Boundry {
+public enum Boundary {
 	UPPER, BOTTOM;
 }

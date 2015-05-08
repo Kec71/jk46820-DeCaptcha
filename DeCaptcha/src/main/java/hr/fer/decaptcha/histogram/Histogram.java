@@ -1,13 +1,16 @@
 package hr.fer.decaptcha.histogram;
 
 import hr.fer.decaptcha.constants.Axis;
-import hr.fer.decaptcha.constants.Boundry;
+import hr.fer.decaptcha.constants.Boundary;
 import hr.fer.decaptcha.constants.Constant;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
+import java.util.Arrays;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class Histogram {
 
@@ -35,9 +38,12 @@ public class Histogram {
 		Raster raster = image.getData();
 		for(int i = 0; i < projectionAbscisa; i++) {
 			int pixelCount = 0;
+
 			for(int j = 0; j < projectionOrdinate; j++) {
-				if(raster.getPixel(i, j, new int[1])[0] == Constant.PIXEL_BLACK) pixelCount++;
+				if(axis.equals(Axis.X_AXIS) && raster.getPixel(i, j, new int[1])[0] == Constant.PIXEL_BLACK) pixelCount++;
+				if(axis.equals(Axis.Y_AXIS) && raster.getPixel(j, i, new int[1])[0] == Constant.PIXEL_BLACK) pixelCount++;
 			}
+			
 			histogram[i] = pixelCount;
 		}
 		
@@ -51,16 +57,16 @@ public class Histogram {
 	 * @param boundry determines whether upper or lower boundry is searched.
 	 * @param threshold represents treshold of histogram.
 	 * @param offset represents how many indexes of histogram must be above or equal to threshold in order for this to be boundry.
-	 * @return index in histogram which represents boundry.
+	 * @return index in histogram which represents boundry or 0 if index cannot be found.
 	 * 
-	 * @see Boundry
+	 * @see Boundary
 	 */
-	public static int findBoundy(final int[] histogram, Boundry boundry, int threshold, int offset) {
+	public static int findBoundy(final int[] histogram, Boundary boundry, int threshold, int offset) {
 		
 		int index = 0;
 		
 		/* Reverse histogram in order to treat it the same way as if bottom boundry is being searched. */
-		if(boundry == Boundry.UPPER) {
+		if(boundry == Boundary.UPPER) {
 			ArrayUtils.reverse(histogram);
 		}
 		
@@ -83,12 +89,48 @@ public class Histogram {
 		}
 		
 		/* Neutralize reversion of histogram */
-		if(boundry == Boundry.UPPER) {
+		if(boundry == Boundary.UPPER) {
 			ArrayUtils.reverse(histogram);
 			index = histogram.length - index - 1;
 		}
 		
 		return index;
+	}
+	
+	/**
+	 * <p>Method which determines next area above threshold starting from starting index in given histogram.</p>
+	 * @param histogram reference to histogram.
+	 * @param startingIndex starting index of search.
+	 * @param threshold value which will determine area. All histogram values equal to or above threshold will be included.
+	 * @return reference to pair object with attributes {@link Pair#getLeft()} as index of areas left boundary <br>
+	 * 			and	{@link Pair#getRight()} as index of areas right boundary.<br>
+	 *          If there is no area above threshold then this method will return Pair with {@link Pair#getLeft()} value<br>
+	 *          equal or bigger than {@link Pair#getRight()}.
+	 */
+	public static Pair<Integer, Integer> findAreaAboveTreshold(final int[] histogram, int startingIndex, int threshold) {
+		if(startingIndex > histogram.length) throw new IllegalArgumentException("Starting index is bigger than histogram lenght.");
+		/* Eliminate all histogram values before starting index. */
+		int[] subHistogram = Arrays.copyOfRange(histogram, startingIndex, histogram.length-1);
+		
+		int start = -1;
+		int end = -1;
+		
+		for(int i = 0; i < subHistogram.length; i++) {
+			
+			if((subHistogram[i] >= threshold) && start == -1) {
+				start = i;
+				continue;
+			} 
+			
+			if ((subHistogram[i] < threshold) && start != -1) {
+				/* Position yourself to previous index since we just exited the treshold area. */
+				end = i - 1;
+				break;
+			}
+		}
+		
+		Pair<Integer, Integer> pair = new MutablePair<>(startingIndex + start, startingIndex + end);
+		return pair;
 	}
 	
 }

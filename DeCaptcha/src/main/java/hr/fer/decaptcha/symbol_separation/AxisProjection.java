@@ -1,10 +1,15 @@
 package hr.fer.decaptcha.symbol_separation;
 
+import hr.fer.decaptcha.constants.Axis;
 import hr.fer.decaptcha.constants.Constant;
+import hr.fer.decaptcha.histogram.Histogram;
+import hr.fer.decaptcha.image.util.ImageUtil;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.Raster;
+import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * <p>Class which is used as symbol separation technique.</p>
@@ -21,41 +26,28 @@ public class AxisProjection implements ISymbolSeparator {
 
 	public List<BufferedImage> separateSymbols(final BufferedImage image) {
 		
-		int[] histogramColumn = generateHistogram(image);
+		List<BufferedImage> symbolImageList = new ArrayList<>(); 
+		int[] histogram = Histogram.generateHistogram(image, Axis.X_AXIS);
 		
-		for(int i = 0; i < histogramColumn.length; i++) {
-			System.out.println("Index[" + i + "]: " + histogramColumn[i]);
-		}
-		
-		return null;
-	}
+		int startIndex = 0;
+		while(true) {
+			Pair<Integer, Integer> boundaries = Histogram.findAreaAboveTreshold(histogram, startIndex, Constant.PIXEL_THRESHOLD);
 
-	/**
-	 * Method which generates histogram values from given gray scale image.
-	 * @param image reference to GRAY SCALE image.
-	 * @return 	array of int where index of array represents column of image, while
-	 * 			value of array represents number of black pixels in corresponding column.
-	 */
-	private int[] generateHistogram(BufferedImage image) {
-		
-		Raster raster = image.getData();
-		
-		int imageWidth = raster.getWidth();
-		int imageHeight = raster.getHeight();
-		
-		int[] histogram = new int[imageWidth];
-		int[] pixelData = new int[1];
-		
-		for(int i = 0; i < imageWidth; i++) {
-			int count = 0;
-			for(int j = 0; j < imageHeight; j++) {
-				if(raster.getPixel(i, j, pixelData)[0] == Constant.PIXEL_BLACK) count++;
+			/* If we reached end of histogram then store remaining part of image. */
+			if(boundaries.getLeft() >= boundaries.getRight()) {
+				BufferedImage im = ImageUtil.copyImage(image, boundaries.getLeft(), 0, image.getWidth()-boundaries.getLeft(), image.getHeight());
+				symbolImageList.add(ImageUtil.resizeImage(im, Constant.IMAGE_WIDTH, Constant.IMAGE_HEIGHT));
+				break;
+			} 
+			/* Otherwise store subimage and set new starting index to search next symbol. */
+			else {
+				BufferedImage im = ImageUtil.copyImage(image, boundaries.getLeft(), 0, boundaries.getRight()-boundaries.getLeft(), image.getHeight());
+				symbolImageList.add(ImageUtil.resizeImage(im, Constant.IMAGE_WIDTH, Constant.IMAGE_HEIGHT));
+				startIndex = boundaries.getRight() + 1;
 			}
-			
-			histogram[i] = count;
 		}
 		
-		return histogram;
+		return symbolImageList;
 	}
 
 }
