@@ -6,6 +6,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 
+import org.apache.log4j.Logger;
+
 /**
  * <p>Erosion is one of the two basic operators in the area of mathematical morphology, the other being {@link Dilate}.</p>
  * <p>It is typically applied to binary images, but there are versions that work on grayscale images. 
@@ -17,8 +19,11 @@ import java.awt.image.WritableRaster;
  *
  */
 public class Erode implements IClutterRemoval {
+	
+	static Logger log = Logger.getLogger(Erode.class);
 
 	public BufferedImage removeClutter(BufferedImage inputImage) {
+		log.info("Applying erosion on image.");
 		
 		Raster inputRaster = inputImage.getData();
 		

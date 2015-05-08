@@ -11,8 +11,11 @@ import java.util.Arrays;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.log4j.Logger;
 
 public class Histogram {
+	
+	static Logger log = Logger.getLogger(Histogram.class);
 
 	/**
 	 * <p>Method which generates histogram from image. </p>
@@ -24,6 +27,7 @@ public class Histogram {
 	 * @throws IllegalArgumentException if type of buffered image is not {@link BufferedImage#TYPE_BYTE_GRAY}
 	 */
 	public static int[] generateHistogram(BufferedImage image, Axis axis) throws IllegalArgumentException {
+		log.info("Generating histogram of image for " + (axis.equals(Axis.X_AXIS) ? "X axis" : "Y axis") + ".");
 		
 		if(image.getType() != BufferedImage.TYPE_BYTE_GRAY) {
 			throw new IllegalArgumentException("Invalid image type while trying to generate histogram.\n"
@@ -62,6 +66,9 @@ public class Histogram {
 	 * @see Boundary
 	 */
 	public static int findBoundy(final int[] histogram, Boundary boundry, int threshold, int offset) {
+		
+		log.info("Searching for " + (boundry.equals(Boundary.UPPER) ? "upper" : "bottom") + " boundry "
+				+ "[treshold = " +  threshold + ", offset = " + offset + "].");
 		
 		int index = 0;
 		
@@ -108,6 +115,8 @@ public class Histogram {
 	 *          equal or bigger than {@link Pair#getRight()}.
 	 */
 	public static Pair<Integer, Integer> findAreaAboveTreshold(final int[] histogram, int startingIndex, int threshold) {
+		log.info("Searching for area above treshold in histogram [size = " + histogram.length + "] for starting index = " + startingIndex + ".");
+		
 		if(startingIndex > histogram.length) throw new IllegalArgumentException("Starting index is bigger than histogram lenght.");
 		/* Eliminate all histogram values before starting index. */
 		int[] subHistogram = Arrays.copyOfRange(histogram, startingIndex, histogram.length-1);
