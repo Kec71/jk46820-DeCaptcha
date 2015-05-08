@@ -1,11 +1,22 @@
 package hr.fer.decaptcha.clutter_removal;
 
+import hr.fer.decaptcha.constants.Constant;
+
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * <p>Class which represents clutter removal technique called median filter.</p>
+ * <p>This technique uses mask of particular size to determine value of new pixel of image at index x, y.
+ * Pixel at index x,y is placed at center of mask. Mask spans over several other pixels.
+ * All the pixels which masks spans over are used to determine new pixel value at index x, y.
+ * New pixel value is median of all pixel values which mask spawns over.</p>
+ * @author Janko
+ *
+ */
 public class MedianFilter implements IClutterRemoval {
 
 	public BufferedImage removeClutter(BufferedImage inputImage) {
@@ -18,7 +29,7 @@ public class MedianFilter implements IClutterRemoval {
 		int imageHeight = inputRaster.getHeight();
 		
 		/* Create blank buffered image which represents image without clutter and set its size same as input image */
-		BufferedImage outputImage = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_BYTE_BINARY);
+		BufferedImage outputImage = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_BYTE_GRAY);
 		WritableRaster outputRaster = (WritableRaster) outputImage.getData();
 		
 		for(int x = 0; x < imageWidth; x++) {
@@ -26,10 +37,14 @@ public class MedianFilter implements IClutterRemoval {
 				
 				int pixelValue = calculatePixelValue(inputRaster, maskSize, imageWidth, imageHeight, x, y);
 				
-				/* Zero represents gray-scale value of sample */
-				outputRaster.setSample(x, y, 0, pixelValue);
+				/* Patch to exclude all gray values */
+				if(pixelValue != Constant.PIXEL_WHITE && pixelValue != Constant.PIXEL_BLACK) {
+					outputRaster.setPixel(x, y, new int[]{Constant.PIXEL_WHITE});
+				} else {
+					outputRaster.setPixel(x, y, new int[]{pixelValue}); 
+				}
 			}
-		}
+		} 
 		
 		outputImage.setData(outputRaster);
 		return outputImage;
@@ -55,8 +70,11 @@ public class MedianFilter implements IClutterRemoval {
 				
 				/* If pixel is on edge of raster then skip it */
 				if(i < 0 || i >= imageWidth || j < 0 || j >= imageHeight) continue;
+
+				int[] pixelData = new int[1];
+				inputRaster.getPixel(i, j, pixelData);
 				
-				sample.add(inputRaster.getSample(i, j, 0));
+				sample.add(pixelData[0]);
 			}
 		}
 		

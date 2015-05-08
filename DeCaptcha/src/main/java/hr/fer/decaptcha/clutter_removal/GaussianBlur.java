@@ -5,6 +5,15 @@ import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 
+/**
+ * <p>Class which represents clutter removal technique called gaussian blur.</p>
+ * <p>This technique uses mask of particular size to determine value of new pixel of image at index x, y.
+ * Pixel at index x,y is placed at center of mask. Mask spans over several other pixels.
+ * All the pixels which masks spans over are used to determine new pixel value at index x, y.
+ * New pixel value is average of all pixel values which mask spawns over.</p>
+ * @author Janko
+ *
+ */
 public class GaussianBlur implements IClutterRemoval {
 
 	public BufferedImage removeClutter(BufferedImage inputImage) {
@@ -17,16 +26,14 @@ public class GaussianBlur implements IClutterRemoval {
 		int imageHeight = inputRaster.getHeight();
 
 		/* Create blank buffered image which represents image without clutter and set its size same as input image */
-		BufferedImage outputImage = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_BYTE_BINARY);
+		BufferedImage outputImage = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_BYTE_GRAY);
 		WritableRaster outputRaster = (WritableRaster) outputImage.getData();
 
 		for(int x = 0; x < imageWidth; x++) {
 			for(int y = 0; y < imageHeight; y++) {
 
 				int pixelValue = calculatePixelValue(inputRaster, maskSize, imageWidth, imageHeight, x, y);
-
-				/* Zero represents gray-scale value of sample */
-				outputRaster.setSample(x, y, 0, pixelValue);
+				outputRaster.setPixel(x, y, new int[]{pixelValue});
 			}
 		}
 
@@ -59,18 +66,7 @@ public class GaussianBlur implements IClutterRemoval {
 			}
 		}
 
-		return calculateAverage(sample);
+		double average = sample.stream().mapToInt(i -> i).average().orElse(0);
+		return (int) average;
 	}
-
-	private int calculateAverage(ArrayList<Integer> marks) {
-		int sum = 0;
-		if(!marks.isEmpty()) {
-			for (Integer mark : marks) {
-				sum += mark;
-			}
-			return (int) Math.floor(sum / marks.size());
-		}
-		return sum;
-	}
-
 }
