@@ -50,24 +50,25 @@ public class Erode implements IClutterRemoval {
 		
 		int[] pixelData = new int[1];
 		
-		for(int i = 0; i < imageWidth; i++) {
-			for(int j = 0; j < imageHeight; j++) {
+		for(int x = 0; x < imageWidth; x++) {
+			for(int y = 0; y < imageHeight; y++) {
 					
 				/* Check surrounding pixels - if one of them is white then set pixel to white (erode it) */
-				if(	inputRaster.getPixel(i, j, pixelData)[0] == Constant.PIXEL_BLACK && 
-				   (inputRaster.getPixel(i+1, j+1, pixelData)[0] == Constant.PIXEL_WHITE 	||
-					inputRaster.getPixel(i+1, j, pixelData)[0] == Constant.PIXEL_WHITE 		||
-					inputRaster.getPixel(i+1, j-1, pixelData)[0] == Constant.PIXEL_WHITE 	||
-					inputRaster.getPixel(i, j+1, pixelData)[0] == Constant.PIXEL_WHITE 		||
-					inputRaster.getPixel(i, j-1, pixelData)[0] == Constant.PIXEL_WHITE 		||
-					inputRaster.getPixel(i-1, j+1, pixelData)[0] == Constant.PIXEL_WHITE 	||
-					inputRaster.getPixel(i-1, j, pixelData)[0] == Constant.PIXEL_WHITE 		||
-					inputRaster.getPixel(i-1, j-1, pixelData)[0] == Constant.PIXEL_WHITE) ) {
-						outputRaster.setPixel(i, j, new int[] {Constant.PIXEL_WHITE});
+				if(	inputRaster.getPixel(x, y, pixelData)[0] == Constant.PIXEL_BLACK && 
+				   (inputRaster.getPixel(x+1, y+1, pixelData)[0] == Constant.PIXEL_WHITE 	||
+					inputRaster.getPixel(x+1, y, pixelData)[0] == Constant.PIXEL_WHITE 		||
+					inputRaster.getPixel(x+1, y-1, pixelData)[0] == Constant.PIXEL_WHITE 	||
+					inputRaster.getPixel(x, y+1, pixelData)[0] == Constant.PIXEL_WHITE 		||
+					inputRaster.getPixel(x, y-1, pixelData)[0] == Constant.PIXEL_WHITE 		||
+					inputRaster.getPixel(x-1, y+1, pixelData)[0] == Constant.PIXEL_WHITE 	||
+					inputRaster.getPixel(x-1, y, pixelData)[0] == Constant.PIXEL_WHITE 		||
+					inputRaster.getPixel(x-1, y-1, pixelData)[0] == Constant.PIXEL_WHITE) ) {
+						// Izbaciti new int[] van
+						outputRaster.setPixel(x, y, new int[] {Constant.PIXEL_WHITE});
 				} 
 				/* Otherwise set pixel to current pixel value */
 				else {
-					outputRaster.setPixel(i, j, inputRaster.getPixel(i, j, pixelData));
+					outputRaster.setPixel(x, y, inputRaster.getPixel(x, y, pixelData));
 				}
 			}
 		}

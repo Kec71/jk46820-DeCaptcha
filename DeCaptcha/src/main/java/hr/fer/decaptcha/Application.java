@@ -17,7 +17,11 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import org.apache.log4j.Logger;
+
 public class Application {
+	
+	static Logger log = Logger.getLogger(Application.class); 
 
 	public static void main(String[] args) {
 		
@@ -25,11 +29,12 @@ public class Application {
 		IClutterRemoval clutterRemoval = null;
 		ISymbolSeparator separator = null;
 				
-		File inputFile = new File("demo_images/image1.png");
+		File inputFile = new File("demo_images/image2.png");
 		File outputFile = new File("demo_output/image_" + System.currentTimeMillis() % 1000 + ".png");
 		
 		try {
 			
+			log.info("Loading image from: " + inputFile);
 			image = ImageUtil.convertImage(BufferedImage.TYPE_BYTE_GRAY, ImageIO.read(inputFile));
 			
 			clutterRemoval = new MedianFilter();
@@ -38,6 +43,9 @@ public class Application {
 			clutterRemoval = new Erode();
 			image = clutterRemoval.removeClutter(image);
 			
+			ImageIO.write(image, "png", outputFile);
+			
+			/* Reorganizirati. Metoda koja vraca int sa granicama. Ideja je eliminirati meduslike. */
 			clutterRemoval = new AxisTrimmer(Axis.X_AXIS);
 			image = clutterRemoval.removeClutter(image);
 			
@@ -54,10 +62,13 @@ public class Application {
 			List<BufferedImage> symbols = separator.separateSymbols(image);
 			
 			for(BufferedImage symbol : symbols) {
-				ImageIO.write(symbol, "png", new File("demo_output/symbol_" + System.currentTimeMillis() % 1000 + ".png"));
+				Thread.sleep(10);
+				File symbolFile = new File("demo_output/symbol_" + System.currentTimeMillis() % 1000 + ".png");
+				log.info("Saving symbol to: " + symbolFile);
+				ImageIO.write(symbol, "png", symbolFile);
 			}
 			
-			ImageIO.write(image, "png", outputFile);
+			ImageIO.write(image, "png", new File("demo_output/image_test.png"));
 			
 		} catch (IOException e) {
 			e.printStackTrace();

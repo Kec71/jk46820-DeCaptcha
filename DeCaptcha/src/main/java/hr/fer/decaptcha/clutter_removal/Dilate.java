@@ -50,21 +50,19 @@ public class Dilate implements IClutterRemoval {
 		
 		int[] pixelData = new int[1];
 		
-		for(int i = 0; i < imageWidth; i++) {
-			for(int j = 0; j < imageHeight; j++) {
+		for(int x = 0; x < imageWidth; x++) {
+			for(int y = 0; y < imageHeight; y++) {
 				
-				if(inputRaster.getPixel(i, j, pixelData)[0] == Constant.PIXEL_BLACK) {
-					
-					outputRaster.setPixel(i, j, new int[] {Constant.PIXEL_BLACK});
-					
-					if(i > 0) outputRaster.setPixel(i-1, j, new int[] {Constant.PIXEL_BLACK});
-					if(j > 0) outputRaster.setPixel(i, j-1, new int[] {Constant.PIXEL_BLACK});
-					if(i+1 < imageWidth) outputRaster.setPixel(i+1, j, new int[] {Constant.PIXEL_BLACK});
-					if(j+1 < imageHeight) outputRaster.setPixel(i, j+1, new int[] {Constant.PIXEL_BLACK});
-				} else {
-					outputRaster.setPixel(i, j, inputRaster.getPixel(i, j, pixelData));
-				}
+				inputRaster.getPixel(x, y, pixelData);
+				outputRaster.setPixel(x, y, pixelData);
 				
+				if(pixelData[0] == Constant.PIXEL_BLACK) {
+					
+					if(x > 0) outputRaster.setPixel(x-1, y, new int[] {Constant.PIXEL_BLACK});
+					if(y > 0) outputRaster.setPixel(x, y-1, new int[] {Constant.PIXEL_BLACK});
+					if(x+1 < imageWidth) outputRaster.setPixel(x+1, y, new int[] {Constant.PIXEL_BLACK});
+					if(y+1 < imageHeight) outputRaster.setPixel(x, y+1, new int[] {Constant.PIXEL_BLACK});
+				} 
 			}
 		}
 		

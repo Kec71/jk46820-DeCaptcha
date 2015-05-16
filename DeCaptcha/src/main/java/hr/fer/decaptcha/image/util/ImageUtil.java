@@ -50,6 +50,7 @@ public class ImageUtil {
 		BufferedImage copyOfImage = new BufferedImage(subImage.getWidth(), subImage.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
 		Graphics g = copyOfImage.createGraphics();
 		g.drawImage(subImage, 0, 0, null);
+		g.dispose();
 		return copyOfImage;
 	}
 	

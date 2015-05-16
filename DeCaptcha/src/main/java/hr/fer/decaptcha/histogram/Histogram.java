@@ -34,21 +34,22 @@ public class Histogram {
 					+ "Expected:  " + BufferedImage.TYPE_BYTE_GRAY + ", but got: " + image.getType() + ".");
 		}
 		
-		int projectionAbscisa = axis.equals(Axis.X_AXIS) ? image.getWidth() : image.getHeight();
-		int projectionOrdinate = axis.equals(Axis.X_AXIS) ? image.getHeight() : image.getWidth();
+		int projectionApscisa = axis == Axis.X_AXIS ? image.getWidth() : image.getHeight();
+		int projectionOrdinate = axis == Axis.X_AXIS ? image.getHeight() : image.getWidth();
 		
-		int[] histogram = new int[projectionAbscisa];
+		int[] histogram = new int[projectionApscisa];
 		
+		/* Implementirati if-else slucaj za X os i Y os*/
 		Raster raster = image.getData();
-		for(int i = 0; i < projectionAbscisa; i++) {
+		for(int x = 0; x < projectionApscisa; x++) {
 			int pixelCount = 0;
 
-			for(int j = 0; j < projectionOrdinate; j++) {
-				if(axis.equals(Axis.X_AXIS) && raster.getPixel(i, j, new int[1])[0] == Constant.PIXEL_BLACK) pixelCount++;
-				if(axis.equals(Axis.Y_AXIS) && raster.getPixel(j, i, new int[1])[0] == Constant.PIXEL_BLACK) pixelCount++;
+			for(int y = 0; y < projectionOrdinate; y++) {
+				if(axis == Axis.X_AXIS && raster.getPixel(x, y, new int[1])[0] == Constant.PIXEL_BLACK) pixelCount++;
+				if(axis == Axis.Y_AXIS && raster.getPixel(y, x, new int[1])[0] == Constant.PIXEL_BLACK) pixelCount++;
 			}
 			
-			histogram[i] = pixelCount;
+			histogram[x] = pixelCount;
 		}
 		
 		return histogram;

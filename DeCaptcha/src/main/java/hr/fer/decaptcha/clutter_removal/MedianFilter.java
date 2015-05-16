@@ -7,6 +7,7 @@ import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -68,7 +69,8 @@ public class MedianFilter implements IClutterRemoval {
 	private int calculatePixelValue(Raster inputRaster, int maskSize, int imageWidth, int imageHeight, int x, int y) {
 		
 		int offset = maskSize/2;
-		ArrayList<Integer> sample = new ArrayList<Integer>();
+		// Zamjeniti sa poljem
+		List<Integer> sample = new ArrayList<Integer>();
 		
 		for(int i = x - offset; i <= x + offset; i++) {
 			for(int j = y - offset; j <= y + offset; j++) {

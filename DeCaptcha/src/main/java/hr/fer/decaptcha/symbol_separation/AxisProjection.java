@@ -31,6 +31,7 @@ public class AxisProjection implements ISymbolSeparator {
 		
 		int startIndex = 0;
 		while(true) {
+			/* Vrati null ako nema iduceg para.  Pogledati optional objekt */
 			Pair<Integer, Integer> boundaries = Histogram.findAreaAboveTreshold(histogram, startIndex, Constant.PIXEL_THRESHOLD);
 
 			/* If we reached end of histogram then store remaining part of image. */
